@@ -62,13 +62,21 @@ This repository is intentionally a **skeleton**. It contains no business logic. 
 
 ## Getting Started
 
-```bash
-# 1. Clone the repository
-git clone <your-repo-url>
-cd <project-directory>
+### Option 1: Fork this repository (recommended)
 
-# 2. Install dependencies
-npm install
+1. Click the **Fork** button at the top right of this page.
+2. Clone **your fork**:
+
+```bash
+git clone https://github.com/YOUR-USERNAME/angular-nest-template.git
+cd angular-nest-template
+```
+
+### Option 2: Clone directly
+
+```bash
+git clone https://github.com/FredyVzq29/angular-nest-template.git
+cd angular-nest-template
 ```
 
 > **Important:** The package name in `package.json` is currently set to `@my-angular-nest-app/source`.  
@@ -261,3 +269,5 @@ MIT
 **Configure once. Reuse many times.**
 
 Fork this repository, rename the package, and start building.
+
+Happy coding! 🚀
