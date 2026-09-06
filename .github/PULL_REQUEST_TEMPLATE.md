@@ -19,7 +19,7 @@ Please check the relevant option:
 
 ## Related Issues
 
-<!-- Link related issues if any (e.g. Fixes #123) -->
+<!-- Link related issues if any -->
 
 Closes #
 

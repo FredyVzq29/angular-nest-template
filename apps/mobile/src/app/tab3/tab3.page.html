@@ -1,15 +1,25 @@
 <ion-header [translucent]="true">
     <ion-toolbar>
-        <ion-title> Mobile Android </ion-title>
+        <ion-title>GitHub</ion-title>
     </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="ion-padding">
     <ion-header collapse="condense">
         <ion-toolbar>
-            <ion-title size="large">Mobile iOS</ion-title>
+            <ion-title size="large">GitHub</ion-title>
         </ion-toolbar>
     </ion-header>
 
-    <app-explore-container name="Tab 3 page"></app-explore-container>
+    <div class="ion-text-center" style="margin-top: 5rem">
+        <ion-icon name="logo-github" style="font-size: 64px"></ion-icon>
+
+        <h2 style="margin-top: 1.5rem">Fredy Vázquez</h2>
+        <p style="color: var(--ion-color-medium)">@FredyVzq29</p>
+
+        <ion-button href="https://github.com/FredyVzq29" target="_blank" rel="noopener" style="margin-top: 2rem" expand="block" mode="ios" fill="outline">
+            <ion-icon name="logo-github" slot="start"></ion-icon>
+            Visit GitHub Profile
+        </ion-button>
+    </div>
 </ion-content>
