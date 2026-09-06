@@ -3,6 +3,10 @@
     "nrwl.angular-console",
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "firsttris.vscode-jest-runner"
+    "firsttris.vscode-jest-runner",
+    "Angular.ng-template",
+    "bradlc.vscode-tailwindcss",
+    "aaron-bond.better-comments",
+    "WebNative.webnative"
   ]
 }

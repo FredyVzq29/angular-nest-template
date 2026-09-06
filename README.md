@@ -1,102 +1,263 @@
-# MyAngularNestApp
+# Angular + Ionic + NestJS Monorepo Template
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A production-ready **Nx monorepo** template that combines **Angular**, **Ionic/Capacitor**, and **NestJS**.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+This repository is intentionally a **skeleton**. It contains no business logic. Its only goal is to eliminate the repetitive setup work so you can start building features immediately after forking.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/nest?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+> **Clone → Install → Develop**
 
-## Run tasks
+---
 
-To run the dev server for your app, use:
+## Features
 
-```sh
-npx nx serve server
+- Nx workspace with three independent applications:
+    - `mobile` – Ionic + Angular + Capacitor (Web, Android & iOS)
+    - `web` – Standalone Angular application
+    - `server` – NestJS backend
+- Shared tooling already configured:
+    - ESLint + Prettier
+    - Jest
+    - Husky (Git hooks)
+    - Madge (circular dependency detection)
+    - standard-version (semantic releases)
+- Tailwind CSS v4
+- Ready-to-use npm scripts for serve, build, lint, test and mobile workflows
+
+---
+
+## Tech Stack
+
+| Technology            | Purpose                          |
+| --------------------- | -------------------------------- |
+| **Nx**                | Monorepo management              |
+| **Angular**           | Web & Mobile frontend            |
+| **Ionic + Capacitor** | Mobile UI & native builds        |
+| **NestJS**            | Backend / REST API               |
+| **TypeScript**        | Primary language                 |
+| **Tailwind CSS**      | Utility-first styling (`^4.3.3`) |
+| **Jest**              | Unit testing                     |
+| **ESLint + Prettier** | Code quality & formatting        |
+| **Husky**             | Git hooks                        |
+| **Madge**             | Circular dependency detection    |
+| **standard-version**  | Versioning & changelogs          |
+
+---
+
+## Prerequisites
+
+- Node.js (LTS recommended)
+- npm
+- Git
+
+**Mobile development extras**
+
+| Platform | Requirements                           |
+| -------- | -------------------------------------- |
+| Android  | Android Studio + SDK + device/emulator |
+| iOS      | macOS + Xcode + CocoaPods + simulator  |
+
+> iOS builds **require** macOS.
+
+---
+
+## Getting Started
+
+```bash
+# 1. Clone the repository
+git clone <your-repo-url>
+cd <project-directory>
+
+# 2. Install dependencies
+npm install
 ```
 
-To create a production bundle:
+> **Important:** The package name in `package.json` is currently set to `@my-angular-nest-app/source`.  
+> After forking, change it to something meaningful for your project (e.g. `@your-org/your-app`).
 
-```sh
-npx nx build server
+The workspace is now ready.
+
+---
+
+## Development
+
+### Start individual applications
+
+```bash
+npm run serve:server   # NestJS backend
+npm run serve:web      # Angular web app
+npm run serve:mobile   # Ionic app in the browser
 ```
 
-To see all available targets to run for a project, run:
+### Start everything at once
 
-```sh
-npx nx show project server
+```bash
+npm run serve:all
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+---
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Mobile (Capacitor)
 
-## Add new projects
+### Run in the browser (recommended during development)
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/nest:app demo
+```bash
+npm run serve:mobile
 ```
 
-To generate a new library, use:
+### Add platforms (first time only)
 
-```sh
-npx nx g @nx/node:lib mylib
+```bash
+npm run mobile:add:android
+npm run mobile:add:ios          # requires macOS
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+### Sync after code changes
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
+```bash
+npm run mobile:sync:android
+npm run mobile:sync:ios
 ```
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+### Open native IDEs
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
+```bash
+npm run mobile:open:android     # Android Studio
+npm run mobile:open:ios         # Xcode
 ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### Build & run on device/emulator
 
-## Install Nx Console
+```bash
+npm run build:mobile:android
+npm run build:mobile:ios
+```
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+---
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Build
 
-## Useful links
+```bash
+npm run build:server
+npm run build:web
+npm run build:mobile
+npm run build:all               # builds everything → dist/
+```
 
-Learn more:
+---
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/nest?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Code Quality
 
-And join the Nx community:
+```bash
+# Lint
+npm run lint:server
+npm run lint:web
+npm run lint:mobile
+npm run lint:all
 
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+# Test
+npm run test:all
+
+# Format
+npm run format
+npm run format:all
+
+# Detect circular dependencies
+npm run find-circular
+
+# Visualize project graph
+npm run graph
+```
+
+### Affected projects only (Nx)
+
+```bash
+npm run affected                # lint + test + build on changed projects
+```
+
+---
+
+## Versioning & Releases
+
+Uses [standard-version](https://github.com/conventional-changelog/standard-version).
+
+```bash
+npm run release:patch           # 1.0.0 → 1.0.1
+npm run release:minor           # 1.0.0 → 1.1.0
+npm run release:major           # 1.0.0 → 2.0.0
+npm run release:beta            # 1.0.0 → 1.0.0-beta.0
+npm run release:alpha           # 1.0.0 → 1.0.0-alpha.0
+```
+
+---
+
+## Project Structure
+
+```text
+.
+├── apps/
+│   ├── mobile/          # Ionic + Angular + Capacitor
+│   ├── web/             # Angular web application
+│   └── server/          # NestJS backend
+├── libs/                # Shared libraries (add as needed)
+├── dist/                # Build output
+├── .husky/              # Git hooks
+├── nx.json
+├── package.json
+├── tsconfig.base.json
+├── eslint.config.mjs
+├── prettier.config.js
+└── README.md
+```
+
+Create libraries under `libs/` only when you need to share real code between applications. Avoid premature abstraction.
+
+---
+
+## Useful Nx Commands
+
+```bash
+npx nx show projects
+npx nx run <project>:<target>          # e.g. nx run mobile:build
+npx nx run-many -t build
+npx nx graph
+npx nx report
+```
+
+---
+
+## Recommended Workflow
+
+1. `npm install`
+2. `npm run serve:all` (or start only what you need)
+3. Make changes
+4. `npm run lint:all && npm run test:all && npm run find-circular`
+5. `npm run format:all`
+6. `npm run build:all` before releasing
+
+---
+
+## Contributing
+
+Before opening a Pull Request, make sure these commands succeed:
+
+```bash
+npm run lint:all
+npm run test:all
+npm run find-circular
+npm run format:all
+npm run build:all
+```
+
+If you introduce a new dependency or change the workspace structure, explain the reason clearly in the PR.
+
+---
+
+## License
+
+MIT
+
+---
+
+**Configure once. Reuse many times.**
+
+Fork this repository, rename the package, and start building.
