@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo "Verifying circular dependencies..."
+npm run find-circular
+
+echo "Validating lint, tests and build before push..."
+npx nx affected -t lint,test,build

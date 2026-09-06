@@ -1,0 +1,9 @@
+#!/bin/sh
+
+npx lint-staged
+
+if git rev-parse --verify HEAD >/dev/null 2>&1; then
+  npx nx affected -t test --uncommitted
+else
+  npx nx run-many -t test
+fi

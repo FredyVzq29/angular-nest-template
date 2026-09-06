@@ -29,13 +29,21 @@
         "mobile:open:ios": "npx nx run mobile:open:ios",
         "build:mobile:android": "npx nx build mobile && npx nx run mobile:run:android",
         "build:mobile:ios": "npx nx build mobile && npx nx run mobile:run:ios",
-        "prepare": "husky || true",
+        "prepare": "husky",
         "release": "standard-version",
         "release:patch": "standard-version --release-as patch",
         "release:minor": "standard-version --release-as minor",
         "release:major": "standard-version --release-as major",
         "release:beta": "standard-version --prerelease beta",
         "release:alpha": "standard-version --prerelease alpha"
+    },
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx}": [
+            "eslint --fix"
+        ],
+        "*.{js,jsx,ts,tsx,html,scss,css,json,md}": [
+            "prettier --write"
+        ]
     },
     "private": true,
     "dependencies": {
@@ -97,11 +105,13 @@
         "eslint-plugin-import": "^2.32.0",
         "eslint-plugin-prettier": "^5.5.6",
         "eslint-plugin-simple-import-sort": "^14.0.0",
+        "husky": "^9.1.7",
         "jest": "~30.3.0",
         "jest-environment-jsdom": "~30.3.0",
         "jest-environment-node": "~30.3.0",
         "jest-preset-angular": "~17.0.0",
         "jest-util": "~30.3.0",
+        "lint-staged": "^17.5.0",
         "nx": "23.2.0",
         "prettier": "^3.9.6",
         "prettier-plugin-tailwindcss": "^0.8.1",
