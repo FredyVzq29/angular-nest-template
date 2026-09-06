@@ -29,7 +29,7 @@
         "mobile:open:ios": "npx nx run mobile:open:ios",
         "build:mobile:android": "npx nx build mobile && npx nx run mobile:run:android",
         "build:mobile:ios": "npx nx build mobile && npx nx run mobile:run:ios",
-        "prepare": "husky",
+        "prepare": "husky || true",
         "release": "standard-version",
         "release:patch": "standard-version --release-as patch",
         "release:minor": "standard-version --release-as minor",
