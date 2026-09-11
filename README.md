@@ -79,7 +79,7 @@ git clone https://github.com/FredyVzq29/angular-nest-template.git
 cd angular-nest-template
 ```
 
-> **Important:** The package name in `package.json` is currently set to `@my-angular-nest-app/source`.  
+> **Important:** The package name in `package.json` is currently set to `@my-angular-nest-app/source`.
 > After forking, change it to something meaningful for your project (e.g. `@your-org/your-app`).
 
 The workspace is now ready.
@@ -218,6 +218,127 @@ npm run release:alpha           # 1.0.0 → 1.0.0-alpha.0
 ```
 
 Create libraries under `libs/` only when you need to share real code between applications. Avoid premature abstraction.
+
+---
+
+## Generating New Code
+
+This is an Nx workspace, so new apps and libraries are always created with `nx generate` (`nx g` for short) rather than by hand. Everything below has been run and verified against this exact setup.
+
+> ⚠️ **Syntax note:** the target directory is the **first positional argument**. Running `nx g @nx/angular:application my-app` (name only, no path) fails with `Schema does not support positional arguments`. Always pass `apps/<name>` (or `libs/<name>`) first.
+
+### New Application
+
+**Angular app** (same shape as `web`):
+
+```bash
+npx nx g @nx/angular:application apps/<name> \
+  --name=<name> \
+  --style=scss \
+  --routing=true \
+  --standalone=true \
+  --bundler=esbuild \
+  --unitTestRunner=jest \
+  --e2eTestRunner=none
+```
+
+**NestJS app** (same shape as `server`):
+
+```bash
+npx nx g @nx/nest:application apps/<name> --name=<name>
+```
+
+After generating a new **Angular** app, two manual steps are needed (known quirks of this Nx/Angular version, already applied to `web` and `mobile`):
+
+1. **Give it a fixed port** in `apps/<name>/project.json`, under the `serve` target's `options`, so it doesn't collide with the other apps when running `npm run serve:all` (`web` uses `4200`, `mobile` uses `4201` — pick the next free one).
+2. **Fix the test config**: in `apps/<name>/tsconfig.spec.json`, change
+    ```diff
+    - "moduleResolution": "node10"
+    + "moduleResolution": "bundler"
+    ```
+    Without this, `nx test <name>` (and your editor's type-checker) fail with `Cannot find module '@angular/core/testing'`.
+
+If it's an Ionic app like `mobile`, also run:
+
+```bash
+npm i -D @nxext/ionic-angular @nxext/capacitor
+npx nx g @nxext/ionic-angular:configuration <name> --capacitor=true
+```
+
+### New Library
+
+Nx organizes libraries by **type** — name and structure it around what it actually does:
+
+| Type          | Purpose                                     | Example in this repo  |
+| ------------- | ------------------------------------------- | --------------------- |
+| `data-access` | Services, API calls, state                  | `angular-data-access` |
+| `feature`     | Smart components tied to a business feature | `feature-auth`        |
+| `ui`          | Dumb / presentational components            | `ui-buttons`          |
+| `util`        | Framework-agnostic helpers, pure functions  | `util-date`           |
+
+**Angular library** — for code shared between `web` and `mobile` (components, Angular services, pipes, directives):
+
+```bash
+npx nx g @nx/angular:library libs/<name> --name=<name> --standalone=true --unitTestRunner=jest
+```
+
+**Plain TypeScript library** — for code with no Angular dependency, shareable even with `server` (types, pure utils, DTOs):
+
+```bash
+npx nx g @nx/js:library libs/<name> --name=<name> --unitTestRunner=jest --bundler=none
+```
+
+#### Options you'll actually use
+
+| Flag               | What it does                                                                          | Default                       | Notes                                                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `--name`           | Library name; also used to derive the import path                                     | —                             | Required                                                                                                               |
+| `--directory`      | Where it's placed (`libs/<name>`)                                                     | —                             | Passed as the first positional argument above                                                                          |
+| `--standalone`     | _(Angular only)_ Standalone components instead of an NgModule                         | `true`                        | Keep `true` — this repo doesn't use NgModules anywhere                                                                 |
+| `--buildable`      | _(Angular only)_ Gives the library its own `build` target, compiled independently     | `false`                       | Leave off for internal-only libs — simpler and faster. Turn on only if you need to build or version the lib on its own |
+| `--publishable`    | Prepares the library to be published to npm                                           | `false`                       | Not needed for internal libs                                                                                           |
+| `--importPath`     | Overrides the auto-generated import path                                              | `@my-angular-nest-app/<name>` | Only set this if you need a different scope/name than the auto-generated one                                           |
+| `--unitTestRunner` | `jest` \| `none` (Angular libs also accept `vitest-angular`)                          | `jest`                        | Keep `jest` for consistency with the rest of the repo                                                                  |
+| `--bundler`        | _(`@nx/js:library` only)_ `none` \| `tsc` \| `swc` \| `esbuild` \| `rollup` \| `vite` | `tsc`                         | Use `none` for an internal-only, non-buildable lib                                                                     |
+| `--tags`           | Free-text tags, comma-separated (e.g. `scope:shared,type:data-access`)                | —                             | Useful later if you set up `@nx/enforce-module-boundaries` lint rules to restrict who can import what                  |
+
+The import path and the path mapping in `tsconfig.base.json` are set up automatically — no manual editing needed.
+
+#### After generating an Angular library
+
+`@nx/angular:library` scaffolds a demo **component** by default, even for a services-only library. If you're building something like `angular-data-access`, clean that up and add a real service instead:
+
+```bash
+rm -rf libs/<name>/src/lib/<name>
+npx nx g @nx/angular:service <service-name> --project=<name> --no-interactive
+```
+
+Export it from the library's barrel file:
+
+```ts
+// libs/<name>/src/index.ts
+export * from './lib/<service-name>';
+```
+
+Apply the same test-config fix as with apps, in `libs/<name>/tsconfig.spec.json`:
+
+```diff
+- "moduleResolution": "node10"
++ "moduleResolution": "bundler"
+```
+
+Then use it from any app with the generated import path:
+
+```ts
+import { inject } from '@angular/core';
+import { YourService } from '@my-angular-nest-app/<name>';
+
+export class SomeComponent {
+    private readonly yourService = inject(YourService);
+}
+```
+
+If the service injects `HttpClient`, make sure the consuming app has `provideHttpClient()` in its providers (`app.config.ts` for `web`, the `bootstrapApplication` providers array in `main.ts` for `mobile`).
 
 ---
 
